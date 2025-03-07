@@ -24,7 +24,7 @@ Streamlit 🎈 (For building the web interface)
 📌 How to Run Locally
 Clone this repository:
 
-git clone https://github.com/your-username/unit-converter.git
+git clone https://github.com/Waqar-5/Unit-converter.gi
 cd unit-converter
 Install dependencies:
 
