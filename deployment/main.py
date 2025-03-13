@@ -5,7 +5,7 @@ api = FastAPI()
 
 # Define a Get endpoint at the route "/hello"
 
-@app.get("hello")
+@api.get("hello")
 def hello_world():
 
     return {"message": "Hellow World"}
