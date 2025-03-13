@@ -1,6 +1,6 @@
-import click # To create a cli
-import json # to save and load tasks from a file
-import os # to check if the file exists
+import streamlit as st
+import json
+import os
 
 TODO_FILE = "todo.json"
 
@@ -10,71 +10,40 @@ def load_tasks():
         return []
     with open(TODO_FILE, "r") as file:
         return json.load(file)
-    
-def save_tasks(tasks): # user define in termial
+
+def save_tasks(tasks):
     """Save tasks to file"""
     with open(TODO_FILE, "w") as file:
         json.dump(tasks, file, indent=4)
 
+# Load tasks initially
+tasks = load_tasks()
 
-@click.group()
-def cli():
-    """Simple Todo List Manager"""
-    pass
+st.title("📝 Simple To-Do List Manager")
 
-@click.command()
-@click.argument("task")
-def add(task):
-    """Add a new task to the list"""
-    tasks = load_tasks()
-    tasks.append({"task": task, "done": False})
-    save_tasks(tasks)
-    click.echo(f"Task added successfully: {task}")
-
-@click.command(name = "list")
-def list_tasks():
-    """List all the tasks"""
-    tasks = load_tasks()
-    if not tasks:
-        click.echo("No tasks found.")
-        return 
-    for index, task in enumerate(tasks, 1):
-        status = "✅" if task["done"] else '❌'
-        click.echo(f"{index}. {task['task']} [{status}]")
-
-
-@click.command()
-@click.argument("task_number", type=int)
-def complete(task_number):
-    """Mark a task as completed"""
-    tasks = load_tasks()
-    if 0 < task_number <= len(tasks):
-        tasks[task_number - 1]["done"] = True
+# Input for adding new tasks
+new_task = st.text_input("Enter a new task:")
+if st.button("➕ Add Task"):
+    if new_task.strip():
+        tasks.append({"task": new_task, "done": False})
         save_tasks(tasks)
-        click.echo(f" Task {task_number} marked as completed.")
-    else:
-        click.echo(f"Invalid task  number: {task_number}")
+        st.experimental_rerun()  # Refresh the page
 
-@click.command()
-@click.argument("task_number", type=int)
-def remove(task_number):
-    """Remove a task from the list"""
-    tasks = load_tasks()
-    if 0 < task_number <= len(tasks):
-        removed_task = tasks.pop(task_number - 1)
-        save_tasks(tasks)
-        click.echo(f"Removed task: {removed_task['task']}")
-        # click.e
-    else:
-        click.echo("Invalid task number.")
-
-
-
-cli.add_command(add)
-cli.add_command(list_tasks)
-cli.add_command(complete)
-cli.add_command(remove)
-
-if __name__ == "__main__":
-    cli()
-
+# Display tasks
+st.subheader("Your Tasks:")
+if not tasks:
+    st.write("No tasks found.")
+else:
+    for index, task in enumerate(tasks):
+        col1, col2, col3 = st.columns([4, 1, 1])
+        col1.write(f"**{index + 1}. {task['task']}**")
+        
+        if col2.button("✅ Complete", key=f"complete_{index}"):
+            tasks[index]["done"] = True
+            save_tasks(tasks)
+            st.experimental_rerun()
+        
+        if col3.button("❌ Remove", key=f"remove_{index}"):
+            tasks.pop(index)
+            save_tasks(tasks)
+            st.experimental_rerun()
