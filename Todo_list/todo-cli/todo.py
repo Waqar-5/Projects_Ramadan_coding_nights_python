@@ -78,4 +78,3 @@ cli.add_command(remove)
 if __name__ == "__main__":
     cli()
 
-
