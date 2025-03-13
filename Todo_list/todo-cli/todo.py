@@ -27,7 +27,7 @@ if st.button("➕ Add Task"):
     if new_task.strip():
         tasks.append({"task": new_task, "done": False})
         save_tasks(tasks)
-        st.experimental_rerun()  # Refresh the page
+        st.rerun()  # Refresh the page
 
 # Display tasks
 st.subheader("Your Tasks:")
@@ -41,9 +41,9 @@ else:
         if col2.button("✅ Complete", key=f"complete_{index}"):
             tasks[index]["done"] = True
             save_tasks(tasks)
-            st.experimental_rerun()
+            st.rerun()
         
         if col3.button("❌ Remove", key=f"remove_{index}"):
             tasks.pop(index)
             save_tasks(tasks)
-            st.experimental_rerun()
+            st.rerun()
